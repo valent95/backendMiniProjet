@@ -181,3 +181,40 @@ INSERT INTO LIGNE (COMMANDE_NUMERO, MEDICAMENT_REFERENCE, QUANTITE) VALUES
 (6, 6, 110), (6, 16, 65), (6, 26, 85), (6, 36, 60), (6, 91, 70),
 (7, 7, 80), (7, 17, 50), (7, 27, 95), (7, 37, 55), (7, 100, 45),
 (8, 8, 100), (8, 18, 75), (8, 28, 80), (8, 38, 70), (8, 48, 60);
+-- Insertion des fournisseurs
+INSERT INTO SUPPLIER (NOM, EMAIL) VALUES
+('Pharmalab International', 'valen.lalevee+pharmalab_antalgiques@gmail.com'),
+('BioMédical Distribution', 'valen.lalevee+biomedical_general@gmail.com'),
+('ChemiPharm Solutions', 'valen.lalevee+chemipharm_specialites@gmail.com'),
+('Médicaments Plus', 'valen.lalevee+medicaments_generico@gmail.com'),
+('Santé Express Group', 'valen.lalevee+santeexpress_prioritaire@gmail.com'),
+('PharmaCare Senegal', 'valen.lalevee+pharmacare_service@gmail.com'),
+('Novamed Corporation', 'valen.lalevee+novamed_innovations@gmail.com'),
+('Doctoralia Supplies', 'valen.lalevee+doctoralia_pharmacie@gmail.com'),
+('MediConnect Logistics', 'valen.lalevee+mediconnect_distribution@gmail.com'),
+('Wellness Plus Pharma', 'valen.lalevee+wellnessplus_complement@gmail.com');
+ALTER TABLE Supplier ALTER COLUMN id RESTART WITH 11;
+
+-- Relations entre fournisseurs et catégories
+-- Chaque catégorie est fournie par au moins 2 fournisseurs
+-- Catégorie 1: Antalgiques (Suppliers 1, 2, 3)
+INSERT INTO SUPPLIER_CATEGORIE (SUPPLIER_ID, CATEGORIE_CODE) VALUES
+(1, 1), (2, 1), (3, 1),
+-- Catégorie 2: Anti-inflammatoires (Suppliers 1, 4, 5)
+(1, 2), (4, 2), (5, 2),
+-- Catégorie 3: Antibiotiques (Suppliers 2, 3, 6)
+(2, 3), (3, 3), (6, 3),
+-- Catégorie 4: Antihypertenseurs (Suppliers 4, 5, 7)
+(4, 4), (5, 4), (7, 4),
+-- Catégorie 5: Antidiabétiques (Suppliers 1, 6, 8)
+(1, 5), (6, 5), (8, 5),
+-- Catégorie 6: Antihistaminiques (Suppliers 2, 7, 9)
+(2, 6), (7, 6), (9, 6),
+-- Catégorie 7: Vitamines et Compléments (Suppliers 3, 8, 10)
+(3, 7), (8, 7), (10, 7),
+-- Catégorie 8: Médicaments Cardiovasculaires (Suppliers 4, 6, 9)
+(4, 8), (6, 8), (9, 8),
+-- Catégorie 9: Médicaments Gastro-intestinaux (Suppliers 5, 7, 10)
+(5, 9), (7, 9), (10, 9),
+-- Catégorie 10: Médicaments Respiratoires (Suppliers 1, 8, 9)
+(1, 10), (8, 10), (9, 10);

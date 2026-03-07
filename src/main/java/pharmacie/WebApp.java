@@ -19,3 +19,4 @@ public class WebApp {
     }
 
 }
+// pour lancer l'application : clique sur le bouton play de la classe WebApp
