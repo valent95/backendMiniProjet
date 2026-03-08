@@ -6,7 +6,9 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -80,6 +82,53 @@ public class MedicamentController {
             return ResponseEntity.status(HttpStatus.CREATED).body(saved);
         } catch (Exception e) {
             log.error("Erreur lors de la création du médicament", e);
+            return ResponseEntity.badRequest()
+                    .body("Erreur: " + e.getMessage());
+        }
+    }
+    
+    //permet d'enregidstrer les modifications à un médicament
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateMedicament(@PathVariable Integer id, @RequestBody MedicamentCreateDTO dto) {
+        try {
+            log.info("Modification du médicament réf: {} avec les données: {}", id, dto);
+
+            // 1. Vérifier si le médicament existe déjà en base
+            Medicament existingMedicament = medicamentDao.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Médicament non trouvé avec la référence: " + id));
+
+            // 2. Vérifier et récupérer la nouvelle catégorie par son code
+            if (dto.getCategorieCode() == null) {
+                log.error("categorieCode est null lors de la modification !");
+                return ResponseEntity.badRequest()
+                        .body("L'erreur: categorieCode est obligatoire");
+            }
+
+            Categorie categorie = categorieDao.findById(dto.getCategorieCode())
+                    .orElseThrow(() -> new RuntimeException(
+                            "Catégorie non trouvée avec le code: " + dto.getCategorieCode()));
+
+            // 3. Mettre à jour tous les champs du médicament existant
+            existingMedicament.setNom(dto.getNom());
+            existingMedicament.setQuantiteParUnite(dto.getQuantiteParUnite());
+            existingMedicament.setPrixUnitaire(BigDecimal.valueOf(dto.getPrixUnitaire()));
+            existingMedicament.setUnitesEnStock(dto.getUnitesEnStock());
+            existingMedicament.setUnitesCommandees(dto.getUnitesCommandees());
+            existingMedicament.setNiveauDeReappro(dto.getNiveauDeReappro());
+            existingMedicament.setIndisponible(dto.isIndisponible());
+            existingMedicament.setImageURL(dto.getImageURL());
+            
+            // On écrase l'ancienne catégorie par la nouvelle
+            existingMedicament.setCategorie(categorie);
+
+            // 4. Sauvegarder en base de données
+            Medicament updated = medicamentDao.save(existingMedicament);
+            log.info("Médicament modifié avec succès: {}", updated);
+
+            return ResponseEntity.ok(updated);
+            
+        } catch (Exception e) {
+            log.error("Erreur lors de la modification du médicament", e);
             return ResponseEntity.badRequest()
                     .body("Erreur: " + e.getMessage());
         }
