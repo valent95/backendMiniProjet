@@ -4,11 +4,15 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 import pharmacie.entity.Medicament;
 
 // Cette interface sera auto-implémentée par Spring
+// exported = false pour désactiver l'exposition automatique par Spring Data REST
+// Le contrôleur personnalisé MedicamentController gère l'endpoint /api/medicaments
 
+@RepositoryRestResource(exported = false)
 public interface MedicamentRepository extends JpaRepository<Medicament, Integer> {
     /**
      * Calcule le nombre d'unités vendues pour chaque médicament d'une catégorie donnée.
