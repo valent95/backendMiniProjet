@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -131,6 +132,33 @@ public class MedicamentController {
             log.error("Erreur lors de la modification du médicament", e);
             return ResponseEntity.badRequest()
                     .body("Erreur: " + e.getMessage());
+        }
+    }
+    
+    //permet de supprimer les medicaments
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteMedicament(@PathVariable Integer id) {
+        try {
+            log.info("Demande de suppression du médicament réf: {}", id);
+
+            // 1. Vérifier si le médicament existe
+            if (!medicamentDao.existsById(id)) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("Médicament introuvable avec la référence: " + id);
+            }
+
+            // 2. Supprimer de la base de données
+            medicamentDao.deleteById(id);
+            log.info("Médicament {} supprimé avec succès", id);
+
+            // 3. Renvoyer un code 200 OK
+            return ResponseEntity.ok().build();
+            
+        } catch (Exception e) {
+            log.error("Erreur lors de la suppression du médicament", e);
+            // Souvent une erreur de clé étrangère si le médicament est déjà dans une commande !
+            return ResponseEntity.internalServerError()
+                    .body("Impossible de supprimer ce médicament. Vérifiez qu'il n'est pas lié à une commande existante. Erreur: " + e.getMessage());
         }
     }
 }
