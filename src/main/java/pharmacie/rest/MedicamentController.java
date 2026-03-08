@@ -48,9 +48,11 @@ public class MedicamentController {
     public ResponseEntity<?> createMedicament(@RequestBody MedicamentCreateDTO dto) {
         try {
             log.info("Création d'un médicament avec les données: {}", dto);
+            log.info("  - categorieCode reçu: {}", dto.getCategorieCode());
 
             // Récupérer la catégorie par son code
             if (dto.getCategorieCode() == null) {
+                log.error("categorieCode est null! DTO complet: {}", dto);
                 return ResponseEntity.badRequest()
                         .body("L'erreur: categorieCode est obligatoire");
             }
