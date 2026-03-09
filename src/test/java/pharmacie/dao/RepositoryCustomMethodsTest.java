@@ -59,14 +59,13 @@ class RepositoryCustomMethodsTest {
         m1.setIndisponible(false);
         m1.setUnitesEnStock(100);
         m1.setUnitesCommandees(50);
-        m1 = medicamentRepository.saveAndFlush(m1); // Capture updated entity
-        Integer m1Id = m1.getReference(); // Capture ID for lambda use if needed, or use m1 if it was not reassigned.
-        // Wait, m1 IS reassigned here, so it's not effectively final for the lambda below.
+        m1 = medicamentRepository.saveAndFlush(m1); 
+        Integer m1Id = m1.getReference(); 
 
         Medicament m2 = new Medicament();
         m2.setNom("Med2");
         m2.setCategorie(c);
-        m2.setIndisponible(true); // Unavailable
+        m2.setIndisponible(true);
         medicamentRepository.saveAndFlush(m2);
 
         Medicament m3 = new Medicament();
@@ -74,7 +73,7 @@ class RepositoryCustomMethodsTest {
         m3.setCategorie(c);
         m3.setIndisponible(false);
         m3.setUnitesEnStock(10);
-        m3.setUnitesCommandees(20); // Out of logical stock
+        m3.setUnitesCommandees(20); 
         medicamentRepository.saveAndFlush(m3);
 
         // medicamentsDisponibles
